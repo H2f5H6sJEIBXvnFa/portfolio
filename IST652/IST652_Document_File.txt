@@ -1,0 +1,14 @@
+Directory ...\My Drive\portfolio\IST652
+
+This folder contains the following file(s):
+- Tully_Dan_Final_Project.pdf
+
+File(s) can be accessed using the following software: 
+- Adobe Acrobat Reader
+
+This folder contains the following file(s):
+- Tully_Dan_Final_Project.ipynb
+
+File(s) can be accessed using the following software: 
+- Google Colab
+- Visual Studio

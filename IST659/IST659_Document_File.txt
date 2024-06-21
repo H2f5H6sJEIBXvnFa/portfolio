@@ -1,0 +1,15 @@
+Directory ...\My Drive\portfolio\IST659
+
+This folder contains the following file(s):
+- 8263_Tully_Project2.pdf
+
+File(s) can be accessed using the following software: 
+- Adobe Acrobat Reader
+
+
+This folder contains the following file(s):
+- Code embedded in the file: 8263_Tully_Project2.pdf
+
+File(s) can be accessed using the following software: 
+- Microsoft SQL Server Management Studio
+- Visual Studio

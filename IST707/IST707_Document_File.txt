@@ -1,0 +1,17 @@
+Directory ...\My Drive\portfolio\IST707
+
+This folder contains the following file(s):
+- Dan_Tully_HW6-7.docx
+
+File(s) can be accessed using the following software: 
+- Microsoft Word
+- Google Docs
+- LibreOffice Writer
+
+
+This folder contains the following file(s):
+- 21044_FedPapers.rmd
+
+File(s) can be accessed using the following software: 
+- R Studio
+- Visual Studio

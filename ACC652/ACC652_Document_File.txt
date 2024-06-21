@@ -1,0 +1,8 @@
+This folder contains two files:
+ Directory ...\My Drive\portfolio\ACC652
+
+- Dan_Tully_ACC652_Project.xlsx
+- ACC652_ Project - Data Definitions - 2.17.22.xlsx
+
+Both files can be accessed using software: 
+- Microsoft Excel

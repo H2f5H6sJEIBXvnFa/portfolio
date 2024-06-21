@@ -1,0 +1,152 @@
+---
+title: "HW8_Tully"
+author: "IST 772 HW8"
+date: "11/26/21"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# https://rmarkdown.rstudio.com/authoring_basics.html
+## Housekeeping and setup
+rm(list=ls())                              #clear global environment
+if(!is.null(dev.list())) dev.off()         #clear plots
+cat("\014")                                #clear console
+
+## Load Libraries
+library(BayesFactor)
+library(BEST)
+
+## Set your WD to data file
+##setwd("//home/dtlm/OneDrive/Documents/my_school/SU/IST772")
+## Load specified data set
+data(mtcars)
+
+```
+## Assignment: 
+The	homework for this week are exercises: 
+
+* 1-7      (Stanton,p.181) 
+* 8        (Stanton,p.182) 
+
+### Exercise 1 (Stanton,p.181): 
+The data sets package in R contains a small data set called mtcars that contains n = 32  observations of the characteristics of different automobiles. Create a new data frame  from part of this data set using this command: myCars <- data.frame(mtcars[,1:6]).
+
+```{r 1.1}
+# View the column names of the original data set
+colnames(mtcars)
+# Truncateing the data set
+myCars <- data.frame(mtcars[,1:6])
+# View the column names of the created data set
+colnames(myCars)
+```
+
+>We truncated the data set and created a new data set named myCars by removing the following columns: "qsec", "vs", "am", "gear", and "carb". 
+
+### Exercise 2 (Stanton,p.181): 
+Create and interpret a bivariate correlation matrix using cor(myCars) keeping in mind the idea that you will be trying to predict the mpg variable. Which other variable might be the single best predictor of mpg?
+
+```{r 2.1}
+# creating a bivariate correlation matrix
+cor(myCars)
+```
+
+> The other variable that might be the single best predictor of mpg is wt because it has a high negative correlation at -0.8677.
+
+### Exercise 3 (Stanton,p.181): 
+Run a multiple regression analysis on the myCars data with lm(), using mpg as the  dependent variable and wt (weight) and hp (horsepower) as the predictors. Make  sure to say whether or not the overall R-squared was significant. If it was significant,  report the value and say in your own words whether it seems like a strong result or  not. Review the significance tests on the coefficients (B-weights). For each one that  was significant, report its value and say in your own words whether it seems like a  strong result or not. 
+
+```{r 3.1}
+# multiple regression analysis
+myCarslm <- lm(mpg ~ wt + hp, data =myCars)
+summary(myCarslm)
+```
+
+> In this multiple regression analysis the R-squared at 0.8268 is significant. The F(2,29)=69.21, p < .001,  meaning that we reject the null hypothesis.  The wt variable has a very strong negative relationship on mpg with an estimate of -3.9 and it is significant with a Pr(>|t|) value of 1.12e-06 (<.001). hp variable also has a strong negative relationship on mpg with an estimate of -0.03 and it is significant with a Pr(>|t|) value of 0.001.
+
+### Exercise 4 (Stanton,p.181):  
+Using the results of the analysis from Exercise 2, construct a prediction equation for  mpg using all three of the coefficients from the analysis (the intercept along with the  two B-weights). Pretend that an automobile designer has asked you to predict the  mpg for a car with 110 horsepower and a weight of 3 tons. Show your calculation and  the resulting value of mpg. 
+
+```{r 4.1}
+# prediction equation for mpg
+37.22727 + (3 * -3.87783) + (100 * -0.03177)
+```
+ 
+> This is the prediction equation for mpg for a car with 110 horsepower and a weight of 3 tons.
+ mpg = intercept + (x1 * wt) + (x2 * hp);
+ mpg = 37.22727 + (3 * -3.87783) + (100 * -0.03177);
+ mpg = 22.41678
+ 
+### Exercise 5 (Stanton,p.181): 
+Run a multiple regression analysis on the myCars data with lmBF(), using mpg as the  dependent variable and wt (weight) and hp (horsepower) as the predictors. Interpret  the resulting Bayes factor in terms of the odds in favor of the alternative hypothesis. If  you did Exercise 2, do these results strengthen or weaken your conclusions?
+ 
+```{r 5.1}
+#
+mpgOutMCMC <- lmBF(mpg ~ wt + hp,  data=myCars)  
+summary(mpgOutMCMC)
+
+library(effectsize)
+bf = 788547604
+interpret_bf(
+  bf,
+  rules = "raftery1995",
+  log = FALSE,
+  include_value = FALSE,
+  protect_ratio = TRUE,
+  exact = TRUE
+)
+```
+
+> This multiple regression analysis resulted in a very strong evidence in favor or the desired hypothesis.  We would be rejecting the null hypothesis.  In comparison to the earlier excercise this result would strengthen our conclusion.
+
+### Exercise 6 (Stanton,p.181): 
+Run lmBF() with the same model as for Exercise 4, but with the options posterior=TRUE  and iterations=10000. Interpret the resulting information about the coefficients.
+ 
+```{r 6.1}
+#
+mpgOutMCMC <- lmBF(mpg ~ wt + hp,  data=myCars, posterior=TRUE, iterations=10000)
+summary(mpgOutMCMC)
+
+```
+
+> While Interpreting the resulting information of the coefficients wt and hp we can see they both have a negative relationship to mpg.  Since 95% HDI do not pass through zero it demonstrates that there is significance in rejecting the null hypothesis.
+
+### Exercise 7 (Stanton,p.181): 
+Run install.packages() and library() for the “car” package. The car package is “companion to applied regression” rather than more data about automobiles. Read the  help file for the vif() procedure and then look up more information online about how to  interpret the results. Then write down in your own words a “rule of thumb” for interpreting vif.
+ 
+```{r 7.1}
+# install.package car
+#install.packages("car")
+# add library car
+library(car)
+# interpret_vif
+interpret_vif(c(3,7,15))
+```
+
+> The rule of thumb for the diagnostic for multicollinearity and interpreting the VIF is that if it is under five then it is low. If it is five but less than 10 then it is moderate.  If it is ten or higher then it is high multicollinearity.
+
+### Exercise 8 (Stanton,p.182): 
+Run vif() on the results of the model from Exercise 2. Interpret the results. Then run a  model that predicts mpg from all five of the predictors in myCars. Run vif() on those  results and interpret what you find.
+ 
+```{r 8.1}
+#
+library(effectsize)
+# run a  model that predicts mpg from hp and wt of the predictors in myCars.
+mpg_vif <- vif(lm(mpg ~ hp + wt, data = myCars))
+mpg_vif
+# interpret_vif
+interpret_vif(mpg_vif)
+# run a  model that predicts mpg from all five of the predictors in myCars.
+mpg_vif <- vif(lm(mpg ~ cyl + disp + hp + drat + wt, data = myCars))
+mpg_vif
+# interpret_vif
+interpret_vif(mpg_vif)
+```
+
+> The first test resulted in low multicollinearity with hp and wt.  The second test with all 5 variables shows low multicollinearity with hp and drat. It has a moderate multicollinearity in cyl and wt. It has a high multicollinearity in disp.
+
+## Reference(s):
+Stanton, Jeffrey M.. Reasoning with Data. Guilford Publications. Kindle Edition. 
+  

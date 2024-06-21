@@ -1,0 +1,18 @@
+Directory ...\My Drive\portfolio\IST737
+
+This folder contains the following file(s):
+- Final_DashboardData.png     
+- Final_DashboardDetail.png
+- Final_DashboardMain.png 
+- Final_Q&A.png
+
+File(s) can be accessed using the following software: 
+- Google Image Preview
+- Microsoft Photos
+- LibreOffice Draw
+
+This folder contains the following file(s):
+- Tully_Daniel_Final.twbx
+
+File(s) can be accessed using the following software: 
+- Tableau

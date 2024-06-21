@@ -1,0 +1,16 @@
+Directory ...\My Drive\portfolio\IST772
+
+This folder contains the following file(s):
+- HW8_Tully.pdf
+- HW10_Tully.pdf
+
+File(s) can be accessed using the following software: 
+- Adobe Acrobat Reader
+
+This folder contains the following file(s):
+- HW8_Tully.RMD
+- HW10_Tully.RMD
+
+File(s) can be accessed using the following software: 
+- R Studio
+- Visual Studio

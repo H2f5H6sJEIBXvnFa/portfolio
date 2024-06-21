@@ -1,0 +1,18 @@
+Directory ...\My Drive\portfolio\SCM651
+
+This folder contains the following file(s):
+- HW4_Team2.docx
+
+File(s) can be accessed using the following software: 
+- Microsoft Word
+- Google Docs
+- LibreOffice Writer
+
+
+This folder contains the following file(s):
+- HW4_Team2.xlsx
+
+File(s) can be accessed using the following software: 
+- Microsoft Excel
+- Google Sheets
+- LibreOffice Calc

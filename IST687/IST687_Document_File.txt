@@ -1,0 +1,9 @@
+Directory ...\My Drive\portfolio\IST687
+
+This folder contains the following file(s):
+- Dan_Tully_Team3_IST687_FinalProject.pptx
+
+File(s) can be accessed using the following software: 
+- Microsoft PowerPoint
+- Google Slides
+- LibreOffice Impress

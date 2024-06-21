@@ -1,0 +1,153 @@
+---
+title: "HW10_Tully"
+author: "IST 772 HW10"
+date: "12/11/21"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# https://rmarkdown.rstudio.com/authoring_basics.html
+## Housekeeping and setup
+rm(list=ls())                              #clear global environment
+if(!is.null(dev.list())) dev.off()         #clear plots
+cat("\014")                                #clear console
+
+## Load Libraries
+library(BayesFactor)
+library(BEST)
+
+## Set your WD to data file
+##setwd("//home/dtlm/OneDrive/Documents/my_school/SU/IST772")
+## Load specified data set
+#install.packages("nlme")
+#install.packages("changepoint")
+library(changepoint)
+library(nlme)
+library(carData)
+data("Blackmore")
+
+```
+## Assignment: 
+The	homework for this week are exercises: 
+
+* 2	              (Stanton,p.272)
+* 5, 6, 7, and 8  (Stanton,p.273)
+
+### Exercise 2 (Stanton,p.272): 
+Download and library the nlme package and use data (“Blackmore”) to activate the  Blackmore data set. Inspect the data and create a box plot showing the exercise level at  different ages. Run a repeated measures ANOVA to compare exercise levels at ages 8, 10,  and 12 using aov(). You can use a command like, myData <-Blackmore[Blackmore*$*age  <=12,], to subset the data. Keeping in mind that the data will need to be balanced before you can conduct this analysis, try running a command like this,  table(myData*$*subject, myData*$*age)), as the starting point for cleaning up the data set.
+
+```{r 1.1}
+# display the summary of the data set.
+summary(Blackmore)
+# subset the data
+myData <- Blackmore[Blackmore$age<=12,]
+# Data cleaning : remove outliers 11.58 & 11.83
+myData12 <- Blackmore[Blackmore$age==12,]
+myData10 <- Blackmore[Blackmore$age==10,]
+myData08 <- Blackmore[Blackmore$age==8,]
+#subset/append the three desired ages to myData
+myData <- rbind(myData08, myData10, myData12)
+#plot the exercise for subset of ages
+plot(myData$exercise, main="plot exercise - before balance")
+#Show unbalanced table
+table(myData$age)
+#boxplot exercise by age - before balance
+boxplot(exercise~age, data=myData, main="boxplot exercise by age - before balance")
+#suppress warning start
+defaultW <- getOption("warn") 
+options(warn = -1)
+#Make a list of rows - Balance data set
+list <- rowSums(table(myData$subject,myData$age))==3  
+#Keep only those with 3 observations
+list <- list[list==TRUE]   
+#Extract the row indices
+list <- as.numeric(names(list))   
+#suppress warning close
+options(warn = defaultW)
+#Match against the data
+mdBal <- myData[myData$subject %in% list,]  
+#Show balanced table
+table(mdBal$age)
+#box plot exercise by age - after balance
+boxplot(exercise~age, data=mdBal, main="boxplot exercise by age - after balance")
+summary(aov(exercise ~ age + Error(subject), data=mdBal))
+```
+
+> Running a repeated measures ANOVA to compare exercise levels at ages 8, 10,  and 12 using aov() demonstrates statistical significance in the age variable to determining estimated hours per week dedicated to exercise.  The p-value is well below the standard alpha of 0.05.  In this case, we would reject the null hypothesis. 
+
+### Exercise 5 (Stanton,p.273): 
+Given that the AirPassengers data set has a substantial growth trend, use diff() to create a differenced data set. Use plot() to examine and interpret the results of differencing. Use cpt.var() to find the change point in the variability of the differenced time series.  Plot the result and describe in your own words what the change point signifies.
+
+```{r 5.1}
+
+#add dataset AirPassengers
+data("AirPassengers")
+# diff() to create a differenced data set
+diff(AirPassengers)
+# plot the differenced data set
+#plot(diff(AirPassengers))
+cvdap <- cpt.var(diff(AirPassengers))
+summary(cvdap)
+# identify change point
+cpLoc <- AirPassengers[cvdap@cpts[1]]
+# Add a blue vertical line to plot at changepoint
+plot(diff(AirPassengers), main = "AirPassengers Differencing with Variance Changepoint (CP)")
+abline(v = 1955.3333, col="blue",lwd = 2)
+text(1955.3333,-100,"C P", col="blue")
+```
+
+> Using the AMOC (“at most one change”) method of analysis with variance as the changepoint type.  The changepoint identified, at observation location #*76*, is denoted as the first observation of the new segment.  With a data set of 144 observations, this changepoint is just slightly right of center or during the year 1955 as reflected on the chart with the vertical blue line.
+
+### Exercise 6 (Stanton,p.273):  
+Use cpt.mean() on the AirPassengers time series. Plot and interpret the results. Compare the change point of the mean that you uncovered in this case to the change point  in the variance that you uncovered in Exercise 5. What do these change points suggest  about the history of air travel? 
+
+```{r 6.1}
+#Use cpt.mean() on the AirPassengers time series
+cmdap <- cpt.mean(diff(AirPassengers))
+summary(cmdap)
+# identify change point
+cmLoc <- AirPassengers[cmdap@cpts[1]]
+# get the mean of the differencing of AirPassengers (2.2378)
+mdap <- mean(diff(AirPassengers))
+# Add a blue vertical line to plot at changepoint
+plot(diff(AirPassengers), main = "AirPassengers Differencing with Mean Changepoint (CP)")
+abline(v = 1960.5833, col="blue",lwd = 2)
+text(1960.5833,-100,"C P", col="blue")
+abline(h = mdap, col="purple",lwd = 2)
+text(1949.3,8,"mean", col="purple")
+```
+ 
+> Using the AMOC (“at most one change”) method of analysis with mean as the changepoint type.  The changepoint identified, at observation location #*139*, is denoted points furthest from the differencing mean.  With a data set of 144 observations, this changepoint is in the year 1960 as reflected on the chart with the vertical blue line.  Comparing this change point of the mean to the change point in the variance uncovered in Exercise 5, we see this one is marked in the 1960s.  The air travel advancements made in 1955 had continued volatility on AirPassenger travel well into the 1960. 
+
+### Exercise 7 (Stanton,p.273): 
+Find historical information about air travel on the Internet and/or in reference materials  that sheds light on the results from Exercises 5 and 6. Write a mini-article (less than 250  words) that interprets your statistical findings from Exercises 5 and 6 in the context of  the historical information you found. 
+
+> Air travel changed in the 1950s-1960s: (1) The speed of Jet engines replaced piston-engine airliners, shortening flight times. (2) low-fare night coach service made it more affordable for individuals to fly out of necessity. (3) The arrival of nonstop transcontinental service allowed people to get around the world easier. (The Era of Mass Air Travel Begins | America by Air, 2007)
+
+### Exercise 8 (Stanton,p.273):  
+Use bcp() on the AirPassengers time series. Plot and interpret the results. Make sure to  contrast these results with those from Exercise 6.
+
+```{r 8.1}
+#install.packages("bcp")  
+library(bcp)  
+bcpap <- bcp(as.vector(AirPassengers))  
+#plot the bcp
+plot(bcpap)
+#check to see if posterior prob > .95
+table(bcpap$posterior.prob >.95) 
+#summary on posterior prob
+summary(bcpap$posterior.prob)
+#examine the posterior.prob at location 139 (CP in ex. 6)
+bcpap$posterior.prob[139]
+```
+ 
+> This posterior means and probabilities of a change chart denotes that the largest spike is around *101* location (Max Probability *0.928*).  Even at that max probability point, it still falls short of the 0.95 we would like to observe for statistical significance.  In contrast with what we observed from exercise 6, where the change point is shown at location *139* here in the probabilities of change chart only show a *0.032* probability of change at that location. 
+ 
+## Reference(s):
+Stanton, Jeffrey M.. Reasoning with Data. Guilford Publications. Kindle Edition. 
+
+The Era of Mass Air Travel Begins | America by Air. (2007). America By Air. Retrieved December 11, 2021, from https://airandspace.si.edu/exhibitions/america-by-air/online/heyday/heyday11.cfm
+  
